@@ -1,0 +1,43 @@
+<template name="scanbar">
+  <view class="radar">
+    <view class="circle_end" hidden="{{!loadingDecIcoShow}}"></view>
+    <view class="circle" hidden="{{loadingDecIcoShow}}">
+      <image class="gradient_circle" animation="{{circleAnimation}}" style="width: 100%; height: 100%;" src="{{circle}}"></image>
+
+      <view class="scan" animation="{{circleAnimation}}">
+        <image class="gradient_dot" style="width: 32px; height: 32px;" src="{{circle_dot}}"></image>
+        <view class="cursor"></view>
+      </view>
+
+      <view wx:if="{{imagesGroup1}}">
+        <view class="imagesGroup1" animation="{{animationGroup1}}" wx:for="{{imagesGroup1}}" wx:for-index="idx" wx:for-item="imagePath" wx:key="*this">
+          <image class="imagesGroup1_{{idx}}" style="width: 32px; height: 32px;" src="{{imagePath}}" />
+        </view>
+      </view>
+
+      <view wx:if="{{imagesGroup2}}">
+        <view class="imagesGroup2" animation="{{animationGroup2}}" wx:for="{{imagesGroup2}}" wx:for-index="idx" wx:for-item="imagePath" wx:key="*this">
+          <image class="imagesGroup2_{{idx}}" style="width: 32px; height: 32px;" src="{{imagePath}}" />
+        </view>
+      </view>
+
+      <view wx:if="{{imagesGroup3}}">
+        <view class="imagesGroup3" wx:if="{{imagesGroup3}}" animation="{{animationGroup3}}" wx:for="{{imagesGroup3}}" wx:for-index="idx" wx:for-item="imagePath" wx:key="*this">
+          <image class="imagesGroup3_{{idx}}" style="width: 32px; height: 32px;" src="{{imagePath}}" />
+        </view>
+      </view>
+
+      <view wx:if="{{imagesGroup4}}">
+        <view class="imagesGroup4" animation="{{animationGroup4}}" wx:for="{{imagesGroup4}}" wx:for-index="idx" wx:for-item="imagePath" wx:key="*this">
+          <image class="imagesGroup4_{{idx}}" style="width: 32px; height: 32px;" src="{{imagePath}}" />
+        </view>
+      </view>
+
+    </view>
+
+    <view class="radar_score">
+      {{progressPercent}}
+      <view class="radar_score_percent">%</view>
+    </view>
+  </view>
+</template>

@@ -1,0 +1,12 @@
+{
+  "pages":[
+    "pages/index/index"
+  ],
+  "window": {
+    "backgroundTextStyle": "dark",
+    "navigationBarBackgroundColor": "#1684fb",
+    "navigationBarTitleText": "CircleProgressBar",
+    "navigationBarTextStyle": "light",
+    "backgroundColor": "#f5f5f5"
+  }
+}

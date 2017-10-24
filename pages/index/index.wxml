@@ -1,0 +1,12 @@
+<!--index.wxml-->
+<!-- 导入模板 -->
+<import src="../../biliang/scan/scanbar.wxml"/>
+
+<view class='bg'></view>
+<view class="container">
+  
+  <template is="scanbar" data="{{...scanbar}}"/>
+
+  <button bindtap='engineButtonTap'>{{startStopEngine}}</button>
+  
+</view>

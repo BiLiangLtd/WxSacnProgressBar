@@ -1,0 +1,178 @@
+/*---------- radar start ----------*/
+.radar {
+  width: 100%;
+  height: 330px;
+  position: relative;
+}
+.circle_end {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin:auto;
+  width: 300px;
+  height: 300px;
+  box-sizing: border-box;
+  border-radius:50%;
+  border: 4px solid rgba(255, 255, 255, 0.5);
+}
+.circle {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin:auto;
+  width: 300px;
+  height: 300px;
+  border-radius:50%;
+}
+.gradient_circle {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.scan {
+  width: 150px;
+  height: 150px;
+  background:linear-gradient(0deg,rgba(40, 168, 252, 0.0),rgba(255, 255, 255, 0.45));
+  border-radius:100% 0 0 0;
+  z-index:999;
+  position: relative;
+
+}
+.gradient_dot {
+  position: absolute;
+  top: -14px;
+  right: -14px;
+}
+.cursor {
+  width: 2px;
+  height: 100%;
+  background: linear-gradient(0deg,rgba(40, 168, 252, 0.0),rgba(255, 255, 255, 0.45));
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.imagesGroup1{
+  opacity: 0;
+}
+.imagesGroup1_0{
+  top: 80px;
+  left: 230px;
+  position: absolute;
+}
+.imagesGroup1_1{
+  top: 130px;
+  left: 220px;
+  position: absolute;
+}
+.imagesGroup1_2{
+  top: 100px;
+  left: 160px;
+  position: absolute;
+}
+.imagesGroup1_3{
+  top: 60px;
+  left: 180px;
+  position: absolute;
+}
+
+.imagesGroup2{
+  opacity: 0;
+}
+.imagesGroup2_0{
+  top: 180px;
+  left: 180px;
+  position: absolute;
+}
+.imagesGroup2_1{
+  top: 230px;
+  left: 170px;
+  position: absolute;
+}
+.imagesGroup2_2{
+  top: 220px;
+  left: 220px;
+  position: absolute;
+}
+.imagesGroup2_3{
+  top: 190px;
+  left: 140px;
+  position: absolute;
+}
+
+.imagesGroup3{
+  opacity: 0;
+}
+.imagesGroup3_0{
+  top: 150px;
+  left: 40px;
+  position: absolute;
+}
+.imagesGroup3_1{
+  top: 180px;
+  left: 80px;
+  position: absolute;
+}
+.imagesGroup3_2{
+  top: 190px;
+  left: 30px;
+  position: absolute;
+}
+.imagesGroup3_3{
+  top: 230px;
+  left: 80px;
+  position: absolute;
+}
+
+.imagesGroup4{
+  opacity: 0;
+}
+.imagesGroup4_0{
+  top: 40px;
+  left: 80px;
+  position: absolute;
+}
+.imagesGroup4_1{
+  top: 20px;
+  left: 120px;
+  position: absolute;
+}
+.imagesGroup4_2{
+  top: 80px;
+  left: 50px;
+  position: absolute;
+}
+.imagesGroup4_3{
+  top: 80px;
+  left: 110px;
+  position: absolute;
+}
+
+.radar_score {
+  margin-top: -30px;
+  margin-left: -80px;
+  width: 160px;
+  height: 60px;
+  text-align: center;
+  line-height: 60px;
+  font-size: 60px;
+  color: #ffffff;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index:1000;
+}
+.radar_score_percent {
+  display: inline-block;
+  margin-top: 25px;
+  margin-left: -15px;
+  height: 30px;
+  line-height: 30px;
+  font-size: 30px;
+}
+
+/*---------- radar end ----------*/

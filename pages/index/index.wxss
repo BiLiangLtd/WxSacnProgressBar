@@ -1,0 +1,14 @@
+/**index.wxss**/
+@import "../../biliang/scan/scanbar.wxss";
+
+.bg {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  flex: 1;
+  z-index: -1;
+  background: linear-gradient(#1788fb, #2bccfd);
+}
