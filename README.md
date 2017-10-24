@@ -6,6 +6,7 @@
 ![image](https://github.com/BiLiangLtd/WxSacnProgressBar/raw/master/demo_images/ScanAnimation.gif)
   
 ## 如何使用
+### 整个项目可以直接作为小程序项目导入到微信开发者工具中运行，biliang目录为组件库目录。
 1. 把clone下来中的项目中的 **biliang** 目录，拷贝到 **小程序项目的根目录**  
 2. 在你的页面级别中(pages/xxx)，导入使用，具体如下：  
 	**1）在wxss中导入样式**  
