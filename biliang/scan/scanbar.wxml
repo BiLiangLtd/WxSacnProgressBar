@@ -9,27 +9,9 @@
         <view class="cursor"></view>
       </view>
 
-      <view wx:if="{{imagesGroup1}}">
-        <view class="imagesGroup1" animation="{{animationGroup1}}" wx:for="{{imagesGroup1}}" wx:for-index="idx" wx:for-item="imagePath" wx:key="*this">
-          <image class="imagesGroup1_{{idx}}" style="width: 32px; height: 32px;" src="{{imagePath}}" />
-        </view>
-      </view>
-
-      <view wx:if="{{imagesGroup2}}">
-        <view class="imagesGroup2" animation="{{animationGroup2}}" wx:for="{{imagesGroup2}}" wx:for-index="idx" wx:for-item="imagePath" wx:key="*this">
-          <image class="imagesGroup2_{{idx}}" style="width: 32px; height: 32px;" src="{{imagePath}}" />
-        </view>
-      </view>
-
-      <view wx:if="{{imagesGroup3}}">
-        <view class="imagesGroup3" wx:if="{{imagesGroup3}}" animation="{{animationGroup3}}" wx:for="{{imagesGroup3}}" wx:for-index="idx" wx:for-item="imagePath" wx:key="*this">
-          <image class="imagesGroup3_{{idx}}" style="width: 32px; height: 32px;" src="{{imagePath}}" />
-        </view>
-      </view>
-
-      <view wx:if="{{imagesGroup4}}">
-        <view class="imagesGroup4" animation="{{animationGroup4}}" wx:for="{{imagesGroup4}}" wx:for-index="idx" wx:for-item="imagePath" wx:key="*this">
-          <image class="imagesGroup4_{{idx}}" style="width: 32px; height: 32px;" src="{{imagePath}}" />
+       <view wx:if="{{images}}">
+        <view wx:for="{{images}}" wx:for-index="idx" wx:for-item="imageItem" wx:key="img">
+          <image animation="{{animations[idx]}}" style="position: absolute; opacity: 0; width: 32px; height: 32px; left: {{imageItem.left}}; top: {{imageItem.top}}" src="{{imageItem.img}}" />
         </view>
       </view>
 

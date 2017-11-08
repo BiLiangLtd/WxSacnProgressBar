@@ -6,41 +6,22 @@
 class ScanBar {
 
   constructor() {
-
+    this.circleTime = 5000;//旋转一周的时间
     this.createAnimations();
     this.initValues();
     this.setPageData();
 
   }
 
+  getPage() {
+    let allpages = getCurrentPages()
+    return allpages[allpages.length - 1]
+  }
+
   createAnimations() {
     this.animation = wx.createAnimation({
       transformOrigin: "150px 150px",
-      duration: 4000,
-      timingFunction: "linear",
-      delay: 0
-    })
-
-    this.animation1 = wx.createAnimation({
-      duration: 800,
-      timingFunction: "linear",
-      delay: 0
-    })
-
-    this.animation2 = wx.createAnimation({
-      duration: 800,
-      timingFunction: "linear",
-      delay: 0
-    })
-
-    this.animation3 = wx.createAnimation({
-      duration: 800,
-      timingFunction: "linear",
-      delay: 0
-    })
-
-    this.animation4 = wx.createAnimation({
-      duration: 800,
+      duration: this.circleTime,
       timingFunction: "linear",
       delay: 0
     })
@@ -49,20 +30,12 @@ class ScanBar {
   initValues() {
     this.timer = null
     this.opacityTimer = null;
-    this.data = {
-      dataSplit: 4,//把整个圆分成dataSplit份
-      dataGroup: {},
-    }
 
     this.repeat = 2;
-    this.renderImage = 0;//用于控制哪块区域渲染图片
   }
 
   setPageData() {
-    let allpages = getCurrentPages()
-    let currentPage = allpages[allpages.length - 1]
-    let page = currentPage
-    page.setData({
+    this.getPage().setData({
       'scanbar.progressPercent': '0',
       'scanbar.loadingDecIcoShow': false,
       'scanbar.circle': '../../biliang/res/gradient_circle.png',//默认外圆图标
@@ -70,126 +43,210 @@ class ScanBar {
     })
   }
 
-  //传入要显示的图片，进行初始化、图片分组
+  //传入要显示的图片，进行初始化、图片位置动态计算
   init(images) {
-
     if (!images || !images.length)
       return
 
-    if (images.length > 16) {
-      images = images.slice(0, 16);//目前最多只能取16个图标
+    if (images.length > 20) {
+      images = images.slice(0, 20);//目前最多只能取16个图标
     }
 
-    let dataSplit = this.data.dataSplit;
+    let imageItems = [];
+    this.animations = [];
 
-    let dataGroupCount = Math.floor(images.length / dataSplit)//每组的个数
-    let remainder = images.length % dataSplit//余数
+    //使用平均随机分布算法，把图标尽量平均的随机分布在圆内
+    for (let i = 0; i < images.length; i++) {
+      let randomPoint = this.randomPoint();
 
-    //将整组图片分布到每一组里面去
-    for (let i = 0; i < dataSplit; i++) {
-      this.data.dataGroup[i] = [];
-      let startIndex = i * dataGroupCount;
-      let endIndex = (i + 1) * dataGroupCount;
-      for (let j = 0; j < images.length; j++) {
-        if (j >= startIndex && j < endIndex) {
-          this.data.dataGroup[i].push(images[j]);
+      //极坐标转直角坐标
+      let x = randomPoint[0];
+      let y = randomPoint[1];
+
+      //排除重叠坐标
+      let repeatRect = false;
+      for (let i = 0; i < imageItems.length; i++) {
+        let item = imageItems[i];
+        //矩形相交
+        if (this.isRectRepeat(x, y, item.x, item.y)) {
+          randomPoint = this.randomPoint();
+          x = randomPoint[0];
+          y = randomPoint[1];
+          repeatRect = true;
+          break;
         }
       }
+
+      while (repeatRect) {
+        randomPoint = this.randomPoint();
+        x = randomPoint[0];
+        y = randomPoint[1];
+        repeatRect = false;
+        for (let i = 0; i < imageItems.length; i++) {
+          let item = imageItems[i];
+          //矩形相交
+          if (this.isRectRepeat(x, y, item.x, item.y)) {
+            repeatRect = true;
+            break;
+          }
+        }
+      }
+
+      let A = 360 - randomPoint[2] + 90;
+
+      if (A >= 360)
+        A = A - 360;
+
+      let imageItem = {
+        img: images[i],
+        left: (x + 150) + 'px',
+        top: (150 - y) + 'px',
+        time: this.circleTime * (A / 360),
+        x,
+        y,
+      }
+      imageItems.push(imageItem);
+      this.animations.push(wx.createAnimation({
+        duration: 500,
+        timingFunction: 'linear',
+        delay: 0,
+      }));
     }
 
-    //将剩余图片分布在各组
-    for (let k = 0; k < remainder; k++) {
-      this.data.dataGroup[k].push(images[dataGroupCount * dataSplit + k]);
-    }
+    console.log('imageItems', imageItems)
 
-    console.log('data group', this.data.dataGroup);
-
-    let allpages = getCurrentPages()
-    let currentPage = allpages[allpages.length - 1]
-    let page = currentPage
-
-    page.setData({
-      'scanbar.imagesGroup1': this.data.dataGroup[0],
-      'scanbar.imagesGroup2': this.data.dataGroup[1],
-      'scanbar.imagesGroup3': this.data.dataGroup[2],
-      'scanbar.imagesGroup4': this.data.dataGroup[3],
+    this.getPage().setData({
+      'scanbar.images': imageItems,
     })
 
     return this.instance;
   }
 
-  startScan() {
-    this.stopScan(false);
-    this.timer = setTimeout(function () {
-      this.showImages();
-    }.bind(this), 500);
+  //随机点
+  randomPoint() {
+    let cellradius = 150;
+    let user_beta = Math.random(1) * 360;
+    let user_r = Math.random(1) * cellradius;
+
+    let rValue = user_beta >= 90 && user_beta <= 180 ? 140 : 60
+
+    while (user_r > rValue) {
+      user_r = Math.random(1) * cellradius;
+    }
+
+    //极坐标转直角坐标
+    let x = user_r * Math.cos(Math.PI / 180 * user_beta);
+    let y = user_r * Math.sin(Math.PI / 180 * user_beta);
+
+    //排除中间部分区域
+    while (x >= -100 && x <= 70 && y >= -40 && y <= 70) {
+      user_beta = Math.random(1) * 360;
+      user_r = Math.random(1) * cellradius;
+
+      while (user_r > 118) {
+        user_r = Math.random(1) * cellradius;
+      }
+
+      x = user_r * Math.cos(Math.PI / 180 * user_beta);
+      y = user_r * Math.sin(Math.PI / 180 * user_beta);
+    }
+
+    let point = [];
+    point.push(x);
+    point.push(y);
+    point.push(user_beta);
+
+    return point;
   }
 
-  //循环闪烁显示图片
-  showImages() {
+  //矩形相交判断
+  isRectRepeat(x1, y1, x2, y2) {
+    return Math.min(x1 + 35, x2 + 35) >= Math.max(x1, x2)
+      && Math.min(y1 + 35, y2 + 35) >= Math.max(y1, y2)
+  }
 
-    let allpages = getCurrentPages()
-    let currentPage = allpages[allpages.length - 1]
-    let page = currentPage
+  showImgs() {
 
     this.animation.rotateZ(360).step()
-    page.setData({
+    this.getPage().setData({
       'scanbar.circleAnimation': this.animation.export(),
     })
 
-    //用完记得停掉它，不然会炸掉
-    this.opacityTimer = setInterval(function () {
-      this.animation1.opacity(this.renderImage % this.data.dataSplit === 0 ? 1 : 0).step();
-      this.animation2.opacity(this.renderImage % this.data.dataSplit === 1 ? 1 : 0).step();
-      this.animation3.opacity(this.renderImage % this.data.dataSplit === 2 ? 1 : 0).step();
-      this.animation4.opacity(this.renderImage % this.data.dataSplit === 3 ? 1 : 0).step();
+    this.currentTime = 500;
 
-      if (this.renderImage > 0 && (this.renderImage + 1) % 4 === 0) {
-        this.animation.rotateZ(360 * this.repeat).step()
+    let repeatTime = 500;
+
+    this.opacityTimer = setInterval(function () {
+      let images = this.getPage().data.scanbar.images;
+
+      let anims = [];
+
+      for (let i = 0; i < images.length; i++) {
+        let image = images[i];
+        let imageTime = image.time;
+        let animObj = image.animObj;
+
+        if (imageTime > 500) {
+          if (this.currentTime > imageTime - 200 && imageTime + 300 >= this.currentTime) {
+            anims.push(this.animations[i].opacity(1).step().export())
+          } else {
+            anims.push(this.animations[i].opacity(0).step().export())
+          }
+        } else {
+          if (this.currentTime > imageTime  && imageTime + 500 >= this.currentTime) {
+            anims.push(this.animations[i].opacity(1).step().export())
+          } else {
+            anims.push(this.animations[i].opacity(0).step().export())
+          }
+        }
+
       }
-      page.setData({
-        'scanbar.circleAnimation': this.animation.export(),
-        'scanbar.animationGroup1': this.animation1.export(),
-        'scanbar.animationGroup2': this.animation2.export(),
-        'scanbar.animationGroup3': this.animation3.export(),
-        'scanbar.animationGroup4': this.animation4.export(),
+
+      this.getPage().setData({
+        'scanbar.animations': anims,
       })
-      if (this.renderImage > 0 && (this.renderImage + 1) % 4 === 0) {
+
+      if (this.currentTime >= this.circleTime) {
+        this.currentTime = 0;
+      }
+
+      this.currentTime += repeatTime;
+      if (this.currentTime >= this.circleTime) {
+        // this.currentTime = 0;
+        this.animation.rotateZ(360 * this.repeat).step()
+        this.getPage().setData({
+          'scanbar.circleAnimation': this.animation.export(),
+        })
         this.repeat++;
       }
-      this.renderImage++;
-    }.bind(this), 1000);
+    }.bind(this), repeatTime);
+  }
 
-
+  startScan() {
+    this.stopScan(false);
+    this.timer = setTimeout(function () {
+      this.showImgs();
+    }.bind(this), 500);
   }
 
   setProgress(progress) {
-    let allpages = getCurrentPages()
-    let currentPage = allpages[allpages.length - 1]
-    let page = currentPage
-    page.setData({
+    this.getPage().setData({
       'scanbar.progressPercent': progress,
     })
     return this.instance;
   }
 
   stopScan(stop) {
-    let allpages = getCurrentPages()
-    let currentPage = allpages[allpages.length - 1]
-    let page = currentPage
     this.animation.rotateZ(0).step({ duration: 0 })
-    this.animation1.opacity(0).step({ duration: 0 });
-    this.animation2.opacity(0).step({ duration: 0 });
-    this.animation3.opacity(0).step({ duration: 0 });
-    this.animation4.opacity(0).step({ duration: 0 });
-    page.setData({
+    let images = this.getPage().data.scanbar.images;
+    let anims = [];
+    for (let i = 0; i < images.length; i++) {
+      anims.push(this.animations[i].opacity(0).step().export())
+    }
+    this.getPage().setData({
       'scanbar.loadingDecIcoShow': stop,
       'scanbar.circleAnimation': this.animation.export(),
-      'scanbar.animationGroup1': this.animation1.export(),
-      'scanbar.animationGroup2': this.animation2.export(),
-      'scanbar.animationGroup3': this.animation3.export(),
-      'scanbar.animationGroup4': this.animation4.export(),
-
+      'scanbar.animations': anims,
     })
     if (stop && stop === true) {
       clearTimeout(this.timer);
