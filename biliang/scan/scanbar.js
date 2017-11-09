@@ -104,6 +104,7 @@ class ScanBar {
         time: this.circleTime * (A / 360),
         x,
         y,
+        A: randomPoint[2]
       }
       imageItems.push(imageItem);
       this.animations.push(wx.createAnimation({
@@ -122,21 +123,39 @@ class ScanBar {
     return this.instance;
   }
 
+  isOutOfCircle(x1, y1) {
+    //d=√（X1-X2）²+（y1-y2）² 判断各点坐标到圆心距离是否大于半径，大于则出界
+    //矩形四个顶点：(x,y) (x+32,y) (x,y+32) (x+32,y+32)，转换视图坐标 y-32
+    //设圆心为(0,0)，则(x2, y2) = (0, 0)，半径150
+    return Math.sqrt((x1 + 32) * (x1 + 32) + y1 * y1) >= 140
+      || Math.sqrt(x1 * x1 + (32-y1) * (32-y1)) >= 140
+      || Math.sqrt((x1 + 32) * (x1 + 32) + (32-y1) * (32-y1)) >= 140
+  }
+
   //随机点
   randomPoint() {
     let cellradius = 150;
     let user_beta = Math.random(1) * 360;
     let user_r = Math.random(1) * cellradius;
 
-    let rValue = user_beta >= 90 && user_beta <= 180 ? 140 : 60
-
-    while (user_r > rValue) {
-      user_r = Math.random(1) * cellradius;
-    }
-
     //极坐标转直角坐标
     let x = user_r * Math.cos(Math.PI / 180 * user_beta);
     let y = user_r * Math.sin(Math.PI / 180 * user_beta);
+
+    while (this.isOutOfCircle(x, y)) {
+      user_beta = Math.random(1) * 360;
+      user_r = Math.random(1) * cellradius;
+
+      while (user_r > 118) {
+        user_r = Math.random(1) * cellradius;
+      }
+
+      x = user_r * Math.cos(Math.PI / 180 * user_beta);
+      y = user_r * Math.sin(Math.PI / 180 * user_beta);
+    }
+
+    //d=√（X1-X2）²+（y1-y2）² 判断各点坐标到圆心距离是否大于半径，大于则出界
+
 
     //排除中间部分区域
     while (x >= -100 && x <= 70 && y >= -40 && y <= 70) {
@@ -149,6 +168,18 @@ class ScanBar {
 
       x = user_r * Math.cos(Math.PI / 180 * user_beta);
       y = user_r * Math.sin(Math.PI / 180 * user_beta);
+
+      while (this.isOutOfCircle(x, y)) {
+        user_beta = Math.random(1) * 360;
+        user_r = Math.random(1) * cellradius;
+
+        while (user_r > 118) {
+          user_r = Math.random(1) * cellradius;
+        }
+
+        x = user_r * Math.cos(Math.PI / 180 * user_beta);
+        y = user_r * Math.sin(Math.PI / 180 * user_beta);
+      }
     }
 
     let point = [];
@@ -193,7 +224,7 @@ class ScanBar {
             anims.push(this.animations[i].opacity(0).step().export())
           }
         } else {
-          if (this.currentTime > imageTime  && imageTime + 500 >= this.currentTime) {
+          if (this.currentTime > imageTime && imageTime + 500 >= this.currentTime) {
             anims.push(this.animations[i].opacity(1).step().export())
           } else {
             anims.push(this.animations[i].opacity(0).step().export())
