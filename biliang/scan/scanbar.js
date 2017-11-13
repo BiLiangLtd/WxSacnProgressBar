@@ -257,7 +257,6 @@ class ScanBar {
 
   startScan() {
     if (!this.timer || this.timer === null) {
-      console.log('startScan');
       this.stopScan(false);
       this.timer = setTimeout(function () {
         this.showImgs();

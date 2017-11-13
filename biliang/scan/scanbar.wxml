@@ -14,7 +14,6 @@
           <image animation="{{animations[idx]}}" style="position: absolute; opacity: 0; width: 32px; height: 32px; left: {{imageItem.left}}; top: {{imageItem.top}}" src="{{imageItem.img}}" />
         </view>
       </view>
-
     </view>
 
     <view class="radar_score">
