@@ -33,16 +33,20 @@
 	**4）在页面js中，调用ScanBar中提供的方法，即可实现效果**  
 	
 	```javascript
-	onShow: function () {
-    	//1、创建对象
+	onLoad: function () {
+	   //1、创建对象
     	this.scanBar = new ScanBar();
     	//2、传入需要展示的图标
     	this.scanBar.init(['../../images/icon_toutiao.svg', '../../images/icon_weibo.svg', '../../images/icon_sohu.svg']);
+	},
+	onShow: function () {
     	//3、开始扫描
     	this.scanBar.startScan();
     	//4、设置进度
       	this.scanBar.setProgress(progress);
+    },
+    onHide: function () {
       	//5、调用该方法可停止扫描，进度达到100%之后，请手动调用，页面关闭时也请手动调用
     	this.scanBar.stopScan(true);
-    },
+    }
 	```
