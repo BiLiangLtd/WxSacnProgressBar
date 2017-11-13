@@ -7,16 +7,15 @@ Page({
     startStopEngine: '开始',
   },
 
-  onShow: function () {
-    let anim = wx.createAnimation({
-      duration: 500,
-      timingFunction: 'linear',
-      delay: 0
-    })
+  onLoad:function(){
     //1、创建对象
     this.scanBar = new ScanBar();
     //2、传入需要展示的图标
     this.scanBar.init(['../../images/icon_toutiao.svg', '../../images/icon_weibo.svg', '../../images/icon_sohu.svg', '../../images/icon_sina.svg', '../../images/icon_wangyi163.svg', '../../images/icon_zhihu.svg', '../../images/icon_ifeng.svg', '../../images/icon_weixin.svg', '../../images/icon_163news.png', '../../images/icon_baidu.png', '../../images/icon_cnr.png', '../../images/icon_teiba.png']);
+  },
+
+  onShow: function () {
+    
   },
 
   //开始/结束按钮点击

@@ -128,8 +128,8 @@ class ScanBar {
     //矩形四个顶点：(x,y) (x+32,y) (x,y+32) (x+32,y+32)，转换视图坐标 y-32
     //设圆心为(0,0)，则(x2, y2) = (0, 0)，半径150
     return Math.sqrt((x1 + 32) * (x1 + 32) + y1 * y1) >= 140
-      || Math.sqrt(x1 * x1 + (32-y1) * (32-y1)) >= 140
-      || Math.sqrt((x1 + 32) * (x1 + 32) + (32-y1) * (32-y1)) >= 140
+      || Math.sqrt(x1 * x1 + (32 - y1) * (32 - y1)) >= 140
+      || Math.sqrt((x1 + 32) * (x1 + 32) + (32 - y1) * (32 - y1)) >= 140
   }
 
   //随机点
@@ -233,31 +233,36 @@ class ScanBar {
 
       }
 
-      this.getPage().setData({
-        'scanbar.animations': anims,
-      })
-
       if (this.currentTime >= this.circleTime) {
-        this.currentTime = 0;
+        this.currentTime = 500;
       }
 
       this.currentTime += repeatTime;
       if (this.currentTime >= this.circleTime) {
         // this.currentTime = 0;
+        console.log('this.currentTime', this.currentTime);
         this.animation.rotateZ(360 * this.repeat).step()
         this.getPage().setData({
           'scanbar.circleAnimation': this.animation.export(),
+          'scanbar.animations': anims,
         })
         this.repeat++;
+      } else {
+        this.getPage().setData({
+          'scanbar.animations': anims,
+        })
       }
     }.bind(this), repeatTime);
   }
 
   startScan() {
-    this.stopScan(false);
-    this.timer = setTimeout(function () {
-      this.showImgs();
-    }.bind(this), 500);
+    if (!this.timer || this.timer === null) {
+      console.log('startScan');
+      this.stopScan(false);
+      this.timer = setTimeout(function () {
+        this.showImgs();
+      }.bind(this), 500);
+    }
   }
 
   setProgress(progress) {
